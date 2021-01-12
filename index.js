@@ -48,4 +48,4 @@ if (app.get('env') === 'development') {
 app.use(logger);
 
 const port = process.env.PORT || 3000;
-app.listen(3000, () => console.log('listening on port ...', port));
+app.listen(port, () => console.log('listening on port ...', port));
