@@ -6,6 +6,8 @@ const morgan = require('morgan');
 const Joi = require('joi');
 const express = require('express');
 const logger = require('./middleware/logger');
+const mongoose = require('mongoose');
+const { databaseUrl } = require('./config');
 
 const genres = require('./routes/genres');
 const home = require('./routes/home');
@@ -28,6 +30,13 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.static('public'));
 // headers
 app.use(helmet());
+
+mongoose.connect(databaseUrl, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(() => {
+})
+.catch((err) => {
+    startupDebugger('database error ', err);
+});
 
 // for any routes, use this module
 
