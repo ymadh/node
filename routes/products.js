@@ -26,22 +26,27 @@ router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { title, imgUrl, price } = req.body;
 
-    const product = await Product.findById(id);
-    if (!product) {
-        res.status(404).send('Product not found');
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            res.status(404).send('Product not found');
+        }
+
+        const { error } = validate(req.body);
+        if (error) return res.status(400).send(error);
+
+        product.title = title;
+        product.imgUrl = imgUrl;
+        product.price = price;
+
+        const result = await product.save();
+        consola.info('update product()', product);
+
+        res.send(result);
+    } catch (error) {
+        res.send(error);
+
     }
-
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error);
-
-    product.title = title;
-    product.imgUrl = imgUrl;
-    product.price = price;
-
-    const result = await product.save();
-    consola.info('update product()', product);
-
-    res.send(result);
 
 });
 router.post('/', async (req, res) => {
