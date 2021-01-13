@@ -59,11 +59,15 @@ router.post('/', async (req, res) => {
         imgUrl: req.body.imgUrl
     });
 
+    try {
     const result = await product.save();
     consola.info('post product()', product);
 
     res.send(result);
 
+    } catch (error) {
+        res.send(error);
+    }
 });
 
 
