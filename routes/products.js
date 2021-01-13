@@ -4,7 +4,13 @@ const consola = require('consola');
 const { Product, validate } = require('../models/product');
 
 router.get('/', async (req, res) => {
-    res.send(await Product.find().sort('name'));
+    try {
+
+        res.send(await Product.find().sort('name'));
+
+    } catch (error) {
+        res.send(error);
+    }
 });
 
 router.get('/:id', async (req, res) => {
@@ -27,13 +33,13 @@ router.put('/:id', async (req, res) => {
 
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error);
-   
+
     product.title = title;
     product.imgUrl = imgUrl;
     product.price = price;
-    
+
     const result = await product.save();
-    consola.info('update product()', product);   
+    consola.info('update product()', product);
 
     res.send(result);
 
@@ -41,15 +47,15 @@ router.put('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error);
-    
-    const product = new Product({ 
+
+    const product = new Product({
         title: req.body.title,
         price: req.body.price,
         imgUrl: req.body.imgUrl
     });
-    
+
     const result = await product.save();
-    consola.info('post product()', product);   
+    consola.info('post product()', product);
 
     res.send(result);
 
