@@ -1,25 +1,19 @@
 
 const config = require('config');
-const startupDebugger = require('debug')('app:startup');
 const helmet = require('helmet');
-const morgan = require('morgan');
-const Joi = require('joi');
 const express = require('express');
-const logger = require('./middleware/logger');
 const mongoose = require('mongoose');
+const consola = require('consola');
 const { databaseUrl } = require('./config');
 
-const genres = require('./routes/genres');
+const products = require('./routes/products');
 const home = require('./routes/home');
 
 const app = express();
 
-// configuration
-startupDebugger('application name', config.get('name'));
-
 // doesn't need to be required
 app.set('view engine', 'pug');
-// path for ttemplates: optional default ./views
+// path for templates: optional default ./views
 app.set('views', './views');
 
 //middleware
@@ -35,26 +29,20 @@ mongoose.connect(databaseUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
 })
 .catch((err) => {
-    startupDebugger('database error ', err);
+    consola.error('database error ', err);
 });
 
-// for any routes, use this module
 
-app.use('/api/genres', genres);
+app.use('/api/products/', products);
 app.use('/api/', home);
 
 //or process.env.NODE_ENV == undefined
-//export NODE_ENV=production
-// npm config or npm rc
 if (app.get('env') === 'development') {
     // logging of requests
-    app.use(morgan('tiny'));
-    startupDebugger('Morgan enabled');
+    // app.use(morgan('tiny'));
 };
 
 
- 
-app.use(logger);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('listening on port ...', port));
