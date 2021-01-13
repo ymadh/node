@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const express = require('express');
 const mongoose = require('mongoose');
 const consola = require('consola');
+const cors = require('cors');
 const { databaseUrl } = require('./config');
 
 const products = require('./routes/products');
@@ -24,6 +25,8 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.static('public'));
 // headers
 app.use(helmet());
+app.use(cors());
+
 
 mongoose.connect(databaseUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
